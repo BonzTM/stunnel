@@ -45,6 +45,8 @@ docker run -d \
 *Then in your client, you simply point to http:containerip:80*
 
 ### Kubernetes
+
+**Deployment**
 ```yaml
 ---
 kind: Deployment
@@ -81,7 +83,27 @@ spec:
               value: "news.astraweb.com:443"
 ```
 
-*Example with Nodeport:  If you use stunnel out-of-cluster, you can use nodeports and just specify clusterip:port*
+**Example service** \
+*If you are in-cluster, you can point your client to servicename-namespace.svc.cluster.local*
+```yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stunnel
+  namespace: stunnel
+  labels:
+    app: stunnel
+spec:
+  ports:
+    - port: 80
+      name: stunnel
+  selector:
+    app: stunnel
+```
+
+**Example service w/ Nodeport** \
+*If you use stunnel out-of-cluster, you can use nodeports and just specify clusterip:port*
 ```yaml
 ---
 apiVersion: v1
@@ -103,20 +125,3 @@ spec:
     app: stunnel
 ```
 
-*Example service: If you are in-cluster, you can point your client to servicename-namespace.svc.cluster.local*
-```yaml
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: stunnel
-  namespace: stunnel
-  labels:
-    app: stunnel
-spec:
-  ports:
-    - port: 80
-      name: stunnel
-  selector:
-    app: stunnel
-```
