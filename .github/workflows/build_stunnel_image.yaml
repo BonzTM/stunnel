@@ -4,7 +4,6 @@ jobs:
   build-push-stunnel:
     runs-on: self-hosted
     env:
-      DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       IMAGE_TAG: "bonztm/stunnel:latest"
     steps:
@@ -12,11 +11,12 @@ jobs:
       - name: checkout repo content
         uses: actions/checkout@v2
 
-      - name: docker login
-        run: |
-          docker login -u BonzTM -p ${{ secrets.DOCKERHUB_TOKEN }} registry-1.docker.io
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: docker build script
-        run: |
-
+        run: ./docker_build.sh
 
