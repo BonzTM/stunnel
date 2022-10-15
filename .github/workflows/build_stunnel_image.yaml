@@ -1,5 +1,11 @@
 name: Build and Push Stunnel to Dockerhub
-on: [push]
+on: 
+  push:
+    branches:
+      - 'master'
+  schedule:
+    - cron: '0 0 * * SUN'
+
 jobs:
   build-push-stunnel:
     runs-on: self-hosted
