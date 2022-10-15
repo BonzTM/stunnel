@@ -11,7 +11,6 @@ jobs:
     runs-on: self-hosted
     env:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      IMAGE_TAG: "bonztm/stunnel:latest"
     steps:
 
       - name: checkout repo content
@@ -37,7 +36,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${IMAGE_TAG}
+          tags: bonztm/stunnel:latest
 
       - name: Remove docker context
         if: always()
