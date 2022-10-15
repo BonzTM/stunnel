@@ -25,7 +25,6 @@ jobs:
 
       - name: Create docker context
         run: |
-          docker context rm stunnel
           docker context create stunnel
 
       - name: Set up Docker Buildx
@@ -41,5 +40,6 @@ jobs:
           tags: ${IMAGE_TAG}
 
       - name: Remove docker context
+        if: always()
         run: docker context rm stunnel
 
