@@ -1,0 +1,22 @@
+name: Build and Push Stunnel to Dockerhub
+on: [push]
+jobs:
+  build-push-stunnel:
+    runs-on: self-hosted
+    env:
+      DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      IMAGE_TAG: "bonztm/stunnel:latest"
+    steps:
+
+      - name: checkout repo content
+        uses: actions/checkout@v2
+
+      - name: docker login
+        run: |
+          docker login -u BonzTM -p ${{ secrets.DOCKERHUB_TOKEN }} registry-1.docker.io
+
+      - name: docker build script
+        run: |
+
+
