@@ -7,6 +7,9 @@ If the configuration is too simple (or you want to have multiple services), you 
 
 Here is the `stunnel.conf` that is generated at runtime
 
+## Source
+https://github.com/BonzTM/stunnel
+
 ```conf
 foreground = yes
 setuid = stunnel
