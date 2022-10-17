@@ -9,10 +9,11 @@ on:
 jobs:
   build-push-stunnel:
     runs-on: self-hosted
-    env:
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-    steps:
 
+    env:
+      DOCKERHUB_REPO: bonztm/stunnel
+
+    steps:
       - name: checkout repo content
         uses: actions/checkout@v2
 
@@ -42,3 +43,11 @@ jobs:
         if: always()
         run: docker context rm stunnel
 
+      - name: Update Dockerhub Description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ env.DOCKERHUB_REPO }}
+          readme-filepath: README.md
+          short-description: ${{ github.event.repository.description }}
