@@ -1,5 +1,6 @@
 name: Build and Push Stunnel to Dockerhub
-on: 
+on:
+  workflow_dispatch:
   push:
     branches:
       - main
