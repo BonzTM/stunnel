@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-push-stunnel:
-    runs-on: self-hosted
+    runs-on: stunnel
 
     env:
       DOCKERHUB_REPO: bonztm/stunnel
