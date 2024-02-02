@@ -7,13 +7,19 @@ on:
   schedule:
     - cron: '0 0 * * SUN'
 
+# Sets permissions of the GITHUB_TOKEN
+permissions:
+  packages: write
+  contents: read
+
+env:
+  GHCR_REPO: ghcr.io/${{ github.repository_owner }}/stunnel
+  DOCKERHUB_REPO: bonztm/stunnel
+
 jobs:
   build-push-stunnel:
-    runs-on: stunnel
-
-    env:
-      GHCR_REPO: ghcr.io/${{ github.repository_owner }}/stunnel
-      DOCKERHUB_REPO: bonztm/stunnel
+    runs-on: 
+      - stunnel
 
     steps:
       - name: checkout repo content
@@ -56,7 +62,7 @@ jobs:
             ${{ env.DOCKERHUB_REPO }}
           tags: |
             type=ref,event=pr
-            type=ref,event=push
+            type=ref,event=branch
             type=raw,value=${{ steps.date.outputs.date }}
             type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short
 
