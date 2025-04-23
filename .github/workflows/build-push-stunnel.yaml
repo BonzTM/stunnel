@@ -19,7 +19,6 @@ permissions:
   security-events: write  # Required for vulnerability scanning results
 
 env:
-  GHCR_REPO: ghcr.io/${{ github.repository }} # make lowercase further down
   DOCKERHUB_REPO: bonztm/stunnel
 
 # =============================================================
@@ -36,6 +35,7 @@ jobs:
         name: Repository to lowercase
         run: |
           echo "GHCR_REPO=ghcr.io/${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
+          echo "IMAGE_SHA_TAG=sha-$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
       # Checkout the repository code to the runner
       - name: checkout repo content
@@ -116,6 +116,14 @@ jobs:
           cache-from: type=gha   # Use GitHub Actions cache for faster builds
           cache-to: type=gha,mode=max  # Store cache for future builds
 
+      # Make sure the image is available locally for scanning
+      - name: Pull image for scanning
+        run: |
+          docker pull ${{ env.GHCR_REPO }}:${{ env.IMAGE_SHA_TAG }}
+          # Verify the image was pulled successfully
+          docker image ls
+          echo "Image to be scanned: ${{ env.GHCR_REPO }}:${{ env.IMAGE_SHA_TAG }}"
+
       # =============================================================
       # SECURITY SCANNING - Scan image for vulnerabilities
       # =============================================================
@@ -124,7 +132,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.GHCR_REPO }}:sha-${{ github.sha }}
+          image-ref: ${{ env.GHCR_REPO }}:${{ env.IMAGE_SHA_TAG }}
           format: 'sarif'        # Output format for GitHub Security
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'  # Only scan for high and critical vulnerabilities
@@ -141,7 +149,7 @@ jobs:
         if: always()  # Always run this step, even if previous steps fail
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.GHCR_REPO }}:sha-${{ github.sha }}
+          image-ref: ${{ env.GHCR_REPO }}:${{ env.IMAGE_SHA_TAG }}
           format: 'table'  # Human-readable table format
           output: 'trivy-results.txt'
           severity: 'CRITICAL,HIGH,MEDIUM'  # Include medium severity issues in report
