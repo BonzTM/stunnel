@@ -5,32 +5,19 @@
 # =============================================================
 
 name: Build Image and Push
-
-# =============================================================
-# TRIGGERS - When this workflow should run
-# =============================================================
 on:
-  # Manual trigger via GitHub UI
   workflow_dispatch:
-  # Automatic trigger on push to main branch
   push:
     branches:
       - main
-  # Automatic trigger every Sunday at midnight
   schedule:
     - cron: '0 0 * * SUN'
 
-# =============================================================
-# PERMISSIONS - Security permissions for the GitHub token
-# =============================================================
 permissions:
   packages: write    # Required to push to GitHub Container Registry
   contents: read     # Required to checkout repository
   security-events: write  # Required for vulnerability scanning results
 
-# =============================================================
-# ENVIRONMENT VARIABLES - Global variables used throughout workflow
-# =============================================================
 env:
   GHCR_REPO: ghcr.io/${{ github.repository }} # make lowercase further down
   DOCKERHUB_REPO: bonztm/stunnel
@@ -39,21 +26,16 @@ env:
 # JOBS - Main workflow components
 # =============================================================
 jobs:
-  # Build and push stunnel Docker image to registries
   build-push-stunnel:
     runs-on: 
-      - stunnel    # Uses a self-hosted runner with the 'stunnel' label
+      - stunnel
 
     steps:
-      # =============================================================
-      # PREPARATION STEPS - Initial setup and environment preparation
-      # =============================================================
-      
       # Convert repository name to lowercase for Docker compatibility
       - id: lower-repo
         name: Repository to lowercase
         run: |
-          echo "repository=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
+          echo "GHCR_REPO=ghcr.io/${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
 
       # Checkout the repository code to the runner
       - name: checkout repo content
