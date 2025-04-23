@@ -35,7 +35,7 @@ jobs:
       - id: lower-repo
         name: Repository to lowercase
         run: |
-          echo "GHCR_REPO=ghcr.io/${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
+          echo "GHCR_REPO=ghcr.io/${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
 
       # Checkout the repository code to the runner
       - name: checkout repo content
