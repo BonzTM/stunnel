@@ -14,7 +14,7 @@ permissions:
   security-events: write  # Required for vulnerability scanning
 
 env:
-  GHCR_REPO: ghcr.io/${{ format('{0}', github.repository) | lowercase }}
+  GHCR_REPO: ghcr.io/${{ github.repository }} # make lowercase further down
   DOCKERHUB_REPO: bonztm/stunnel
 
 jobs:
@@ -23,6 +23,11 @@ jobs:
       - stunnel
 
     steps:
+      - id: lower-repo
+        name: Repository to lowercase
+        run: |
+          echo "repository=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
+
       - name: checkout repo content
         uses: actions/checkout@v4
 
